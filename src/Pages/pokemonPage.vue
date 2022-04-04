@@ -11,6 +11,14 @@
         :pokemons="pokemonArr"
         @selection="checkAnswer ($event)" /> <!-- awui estoy recibiendo el valor del evento $emit, podria dejarlo sin pasar nada por los paretnesis porque al ser un argumento único se entiende que es el valor que esta enviando, lo dejo  por fines de documentacion -->
 
+    
+    <template v-if="showAnswer">
+    <h2 class="fade-in"> {{message}} </h2>
+    <button class="fade-in" @click="newGame"> 
+        Jugar de nuevo
+    </button>
+    </template>
+
     </div>
 
 
@@ -37,7 +45,9 @@ export default {
         return {
             pokemonArr: [],
             pokemon: null,
-            showPokemon: false
+            showPokemon: false,
+            showAnswer: false, 
+            message: ''
         }
     },
     methods: {
@@ -50,8 +60,18 @@ export default {
             //this.pokemon viene del pokemon establecido en data, al decirle this.pokemon = this.pokemonArr[rndInt] estamos haciendo la referencia
             //al pokemon que vamos a enviar a la imagen del pokemon por eso hemos puesto {{pokemon.id}} nos retorno un array y el item del array que nos interesa esta dado por rndInt, ese item tiene una propuiedad o key llamada id. por eso {{pokemon.id}}
         },
-        checkAnswer(pokemonID){
-            console.log(pokemonID)
+        checkAnswer(selectedID){
+            this.showPokemon = true
+            this.showAnswer = true // condición necesaria para que solo se muestre el mensaje cuando el usuario selewccione una opción de respuesta
+
+            this.message = selectedID == this.pokemon.id ? `Eres un verdadero maestro Pokemon, el pokemon es ${this.pokemon.name}`  : `Aún no eres un maestro, el pokemon era ${this.pokemon.name} `
+        },
+        newGame(){
+            this.showPokemon = false
+            this.showAnswer =  false
+            this.pokemonArr = []
+            this.pokemon =  null
+            this.mixPokemonArray()
         }
     },
     mounted(){ // este es un hook del Lifeclycle para los componentes, hara una llamada cada vez que la aplicación se monta
